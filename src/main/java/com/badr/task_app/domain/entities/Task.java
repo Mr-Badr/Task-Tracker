@@ -22,7 +22,7 @@ public class Task {
     private String description;
 
     @Column(name = "due_date")
-    private String dueDate;
+    private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -45,7 +45,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(UUID id, String title, String description, String dueDate, TaskStatus status, TaskPriority priority, TaskList taskList, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Task(UUID id, String title, String description, LocalDateTime dueDate, TaskStatus status, TaskPriority priority, TaskList taskList, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -81,11 +81,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
