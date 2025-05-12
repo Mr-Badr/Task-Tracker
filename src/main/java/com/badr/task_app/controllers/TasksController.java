@@ -6,6 +6,7 @@ import com.badr.task_app.services.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,5 +32,21 @@ public class TasksController {
     @PostMapping
     public TaskDto createTask(@PathVariable("task-list-id") UUID taskListId, @RequestBody TaskDto taskDto){
         return taskMapper.toDto(taskService.createTask(taskListId, taskMapper.fromDto(taskDto)));
+    }
+
+    @GetMapping(path = "/{task_id}")
+    public Optional<TaskDto> getTask(@PathVariable("task-list-id") UUID taskListId, @PathVariable("task_id") UUID taskId){
+        return taskService.getTask(taskListId, taskId)
+                .map(taskMapper::toDto);
+    }
+
+    @PutMapping(path = "/{task_id}")
+    public TaskDto updateTask(@PathVariable("task-list-id") UUID taskListId, @PathVariable("task_id") UUID taskId, @RequestBody TaskDto taskDto){
+        return taskMapper.toDto(taskService.updateTask(taskListId, taskId, taskMapper.fromDto(taskDto)));
+    }
+
+    @DeleteMapping(path = "/{task_id}")
+    public void deleteTask(@PathVariable("task-list-id") UUID taskListId, @PathVariable("task_id") UUID taskId){
+        taskService.deleteTask(taskListId, taskId);
     }
 }

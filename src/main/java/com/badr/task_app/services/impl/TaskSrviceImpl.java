@@ -7,10 +7,12 @@ import com.badr.task_app.domain.entities.TaskStatus;
 import com.badr.task_app.repositories.TaskListRepository;
 import com.badr.task_app.repositories.TaskRepository;
 import com.badr.task_app.services.TaskService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +64,47 @@ public class TaskSrviceImpl implements TaskService {
         );
 
         return taskRepository.save(taskToSave);
+    }
+
+    @Override
+    public Optional<Task> getTask(UUID taskListId, UUID taskId) {
+        return taskRepository.findByTaskListIdAndId(taskListId, taskId);
+    }
+
+    @Override
+    public Task updateTask(UUID taskListId, UUID taskId, Task task) {
+        if (null == task.getId()){
+            throw new IllegalArgumentException("Task ID cannot be null!");
+        }
+
+        if (!Objects.equals(task.getId(), taskId)){
+            throw new IllegalArgumentException("Task ID does not match the one provided!");
+        }
+
+        if (null == task.getPriority()){
+            throw new IllegalArgumentException("Task priority cannot be null!");
+        }
+
+        if (null == task.getStatus()){
+            throw new IllegalArgumentException("Task status cannot be null!");
+        }
+
+        Task existingTask = taskRepository.findByTaskListIdAndId(taskListId, taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task with ID " + taskId + " does not exist!"));
+
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setDueDate(task.getDueDate());
+        existingTask.setPriority(task.getPriority());
+        existingTask.setStatus(task.getStatus());
+        existingTask.setUpdatedAt(LocalDateTime.now());
+
+        return taskRepository.save(existingTask);
+    }
+
+    @Transactional
+    @Override
+    public void deleteTask(UUID taskListId, UUID taskId) {
+        taskRepository.deleteByTaskListIdAndId(taskListId, taskId);
     }
 }

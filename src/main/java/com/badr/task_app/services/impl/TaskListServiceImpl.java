@@ -3,6 +3,7 @@ package com.badr.task_app.services.impl;
 import com.badr.task_app.domain.entities.TaskList;
 import com.badr.task_app.repositories.TaskListRepository;
 import com.badr.task_app.services.TaskListService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class TaskListServiceImpl implements TaskListService {
         return taskListRepository.findAll();
     }
 
+    @Transactional
     @Override
     public TaskList createTaskList(TaskList taskList) {
         if (null != taskList.getId()){
@@ -52,6 +54,7 @@ public class TaskListServiceImpl implements TaskListService {
         return taskListRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public TaskList updateTaskList(UUID taskListId, TaskList taskList) {
         // Check if the task list ID is null
